@@ -61,9 +61,9 @@ jobs:
        # Copie du fichier binaire vers le serveur distant
        - name: Copy binary to server
          run: |
-           scp ./file-bin student@itdeveloppement-server:~/deploy/
+           scp ./file-bin student@itdeveloppement-server.eddi.cloud:~/deploy/
 
        # Exécution du fichier binaire sur le serveur
        - name: Execute the compiled binary on server
          run: |
-          ssh student@itdeveloppement-server "sudo chmod +x ~/deploy/file-bin && ~/deploy/file-bin"
+          ssh student@itdeveloppement-server.eddi.cloud "sudo chmod +x ~/deploy/file-bin && ~/deploy/file-bin"
