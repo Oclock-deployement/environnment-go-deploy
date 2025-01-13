@@ -1,0 +1,67 @@
+name: build & deploy
+
+on:
+  # Déclenchement de l'action lors d'un push sur la branche main ou par déclenchement manuel
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  # Compilation du projet
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # Récupération des fichiers
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Chargement de l'image Go
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.23.x'
+
+      # Installation des dépendances
+      - name: Install dependencies
+        run: |
+          go mod init cowsay
+          go mod tidy
+
+      # Compilation et nommage du fichier binaire
+      - name: Build
+        run: go build -o file-bin ./  
+
+      # Téléchargement du fichier binaire en tant qu'artifact
+      - name: Upload compiled binary
+        uses: actions/upload-artifact@v3
+        with:
+          name: compiled-binary
+          path: ./file-bin
+
+  # # Déploiement du projet
+  # deploy:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     # Configuration de la clé SSH pour le déploiement
+  #     - name: Set up SSH key for deployment
+  #       uses: webfactory/ssh-agent@v0.5.3
+  #       with:
+  #         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+  #     # Téléchargement de l'artifact (fichier binaire compilé)
+  #     - name: Download compiled binary
+  #       uses: actions/download-artifact@v3
+  #       with:
+  #         name: compiled-binary  # Correspond au nom de l'artifact téléchargé
+  #         path: ./  # Téléchargement dans le répertoire courant
+
+  #     # Copie du fichier binaire vers le serveur distant
+  #     - name: Copy binary to server
+  #       run: |
+  #         scp ./file-bin user@server:/path/to/destination
+
+  #     # Exécution du fichier binaire sur le serveur
+  #     - name: Execute the compiled binary on server
+  #       run: |
+  #         ssh user@server 'chmod +x /path/to/destination/file-bin && /path/to/destination/file-bin'
