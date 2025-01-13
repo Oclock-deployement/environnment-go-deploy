@@ -39,29 +39,26 @@ jobs:
           name: compiled-binary
           path: ./file-bin
 
-  # # Déploiement du projet
-  # deploy:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     # Configuration de la clé SSH pour le déploiement
-  #     - name: Set up SSH key for deployment
-  #       uses: webfactory/ssh-agent@v0.5.3
-  #       with:
-  #         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-  #     # Téléchargement de l'artifact (fichier binaire compilé)
-  #     - name: Download compiled binary
-  #       uses: actions/download-artifact@v3
-  #       with:
-  #         name: compiled-binary  # Correspond au nom de l'artifact téléchargé
-  #         path: ./  # Téléchargement dans le répertoire courant
-
-  #     # Copie du fichier binaire vers le serveur distant
-  #     - name: Copy binary to server
-  #       run: |
-  #         scp ./file-bin user@server:/path/to/destination
-
-  #     # Exécution du fichier binaire sur le serveur
-  #     - name: Execute the compiled binary on server
-  #       run: |
-  #         ssh user@server 'chmod +x /path/to/destination/file-bin && /path/to/destination/file-bin'
+  # Déploiement du projet
+  deploy:
+     runs-on: ubuntu-latest
+     steps:
+       # Configuration de la clé SSH pour le déploiement
+       - name: SSH key
+         uses: webfactory/ssh-agent@v0.5.3
+         with:
+           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      #  # Téléchargement de l'artifact (fichier binaire compilé)
+      #  - name: Download compiled binary
+      #    uses: actions/download-artifact@v3
+      #    with:- name: Checkout repository
+      #      name: compiled-binary  # Correspond au nom de l'artifact téléchargé
+      #      path: ./  # Téléchargement dans le répertoire courant
+      #  # Copie du fichier binaire vers le serveur distant
+      #  - name: Copy binary to server
+      #    run: |
+      #      scp ./file-bin student@itdeveloppement-server.eddi.cloud:/path/to/destination
+      #  # Exécution du fichier binaire sur le serveur
+      #  - name: Execute the compiled binary on server
+      #    run: |
+      #      ssh student@itdeveloppement-server.eddi.cloud 'chmod +x /path/to/destination/file-bin && /path/to/destination/file-bin'
