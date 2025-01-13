@@ -45,12 +45,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      # Configuration de la clé SSH pour le déploiement
-      - name: SSH key
-        uses: webfactory/ssh-agent@v0.5.3
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
       # Téléchargement de l'artifact (fichier binaire compilé)
       - name: Download compiled binary
         uses: actions/download-artifact@v3
@@ -58,11 +52,16 @@ jobs:
           name: compiled-binary  # Correspond au nom de l'artifact téléchargé
           path: ./  # Téléchargement dans le répertoire courant
 
-      # Test de connexion SSH sans copier le fichier
-      - name: Test SSH connection
-        run: |
-          echo "Test de la connexion SSH au serveur"
-          ssh -o StrictHostKeyChecking=no student@itdeveloppement-server.eddi.cloud "echo 'Connexion réussie à $(hostname)'"
+      # Test de connexion SSH avec appleboy/ssh-action
+      - name: Test SSH connection using appleboy/ssh-action
+        uses: appleboy/ssh-action@v0.1.5
+        with:
+          host: itdeveloppement-server.eddi.cloud
+          username: student
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            echo "Test de la connexion SSH au serveur"
+            echo "Connexion réussie à $(hostname)"
 
   # # Déploiement du projet
   # deploy:
