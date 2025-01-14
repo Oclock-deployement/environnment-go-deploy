@@ -66,7 +66,7 @@ jobs:
         # Copie du fichier binaire vers le serveur distant
         - name: Copy binary to server
           run: |
-            scp ./file-bin admin@145.223.34.251:~/deploy/  
+            scp -o StrictHostKeyChecking=no ./file-bin admin@145.223.34.251:~/deploy/  
         # Exécution du fichier binaire sur le serveur
         - name: Execute the compiled binary on server
           run: |
