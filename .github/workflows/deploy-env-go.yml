@@ -43,7 +43,7 @@
   
     # Déploiement du projet
     deploy:
-      runs-on: self-hosted
+      runs-on: go
       needs: build
       steps:
         - name: Download artifact 
