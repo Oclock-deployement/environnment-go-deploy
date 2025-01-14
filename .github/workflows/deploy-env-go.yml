@@ -69,7 +69,7 @@
         # Déplacer l'artefact téléchargé à la racine du dossier utilisateur
         - name: Deploy to target directory
           run: |
-            mv ./compiled-binary /home/student/
+            mv ./file-bin /home/student/
             chmod +x /home/student/compiled-binary
         
         # Verifier la presence du fichier
