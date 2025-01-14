@@ -1,17 +1,23 @@
-name: try docker push image  # Nom du workflow
+name: try docker push image
 
 on:
-  workflow_dispatch:                                        # Permet l'exécution manuelle via l'interface GitHub
+  workflow_dispatch:                                        
   push:
+    # déclanchement au push d'un nouveau tag
     tags:
-      - 'v*'                                                # Déclenche le workflow lors de la poussée d'un tag qui commence par "v"
+      - 'v*'                                               
+  schedule:
+    # Planification execution (toute les nuits à minuit)
+      - cron: '0 0 * * *'
+      # - cron: '*/2 * * * *' # toute les 2 minutes pour test
+
 env:
-  REGISTRY: docker.io                                       # Le registre Docker (Docker Hub ici)
-  IMAGE_NAME: ${{ vars.DOCKERHUB_USERNAME }}/vachette       # Le nom de l'image (avec l'utilisateur DockerHub)
+  REGISTRY: docker.io                                      
+  IMAGE_NAME: ${{ vars.DOCKERHUB_USERNAME }}/vachette       # Le nom de l'image 
     
 jobs:
   build:
-    runs-on: ubuntu-24.04                                   # Utilisation de la dernière version Ubuntu comme environnement d'exécution
+    runs-on: ubuntu-24.04                                   
     
     steps:
        # Étape pour vérifier/cloner le code source du dépôt GitHub
@@ -19,13 +25,14 @@ jobs:
 
       # Récupère les métadonnées du Docker
       - name: Docker meta                                   
-        id: meta                                            # Identifiant de l'étape pour réutilisation dans les étapes suivantes
-        uses: docker/metadata-action@v5                     # Action utilisée pour gérer les métadonnées de l'image Docker
+        id: meta                                            
+        uses: docker/metadata-action@v5                     
         with:
           images: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          
-      - name: Login to Docker Hub  # Connexion à Docker Hub
+    
+      # Connexion à Docker Hub
+      - name: Login to Docker Hub  
         uses: docker/login-action@v3  
         with:
           username: ${{ vars.DOCKERHUB_USERNAME }}  
@@ -35,7 +42,7 @@ jobs:
       - name: Build and push  
         uses: docker/build-push-action@v6 
         with:
-          context: .                                            # Le répertoire de travail (répertoire racine du projet GitHub)
-          push: true                                            # Indique qu'il faut pousser l'image construite vers Docker Hub
-          tags: ${{ steps.meta.outputs.tags }}                  # Utilisation des tags récupérés par l'étape précédente (metadonnées)
-          labels: ${{ steps.meta.outputs.labels }}              # Utilisation des labels récupérés par l'étape précédente (metadonnées)
+          context: .                                            # tous le répertoire de travail
+          push: true                                            # pousser l'image construite vers Docker Hub
+          tags: ${{ steps.meta.outputs.tags }}                  
+          labels: ${{ steps.meta.outputs.labels }}              
