@@ -43,55 +43,55 @@ jobs:
 
   # Déploiement du projet
   deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      # Téléchargement de l'artifact (fichier binaire compilé)
-      - name: Download compiled binary
-        uses: actions/download-artifact@v3
-        with:
-          name: compiled-binary  # Correspond au nom de l'artifact téléchargé
-          path: ./  # Téléchargement dans le répertoire courant
+      runs-on: ubuntu-latest
+      needs: build
+      steps:
+        # Test de connexion SSH avec appleboy/ssh-action
+        - name: Test SSH connection using appleboy/ssh-action
+          uses: appleboy/ssh-action@v1.2.0
+          with:
+            host: ${{ secrets.REMOTE_HOST }}
+            username: ${{ secrets.REMOTE_USER }}
+            key: ${{ secrets.SSH_PRIVATE_KEY }}
+            script: |
+             echo "Test de la connexion SSH au serveur"
+             echo "Connexion réussie à $(hostname)"
 
-      # Test de connexion SSH avec appleboy/ssh-action
-      - name: Test SSH connection using appleboy/ssh-action
-        uses: appleboy/ssh-action@v1.2.0
-        with:
-          host: ${{ secrets.REMOTE_HOST }}
-          username: ${{ secrets.REMOTE_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            echo "Test de la connexion SSH au serveur"
-            echo "Connexion réussie à $(hostname)"
+        # Téléchargement de l'artifact (fichier binaire compilé)
+        - name: Download compiled binary
+          uses: actions/download-artifact@v3
+          with:
+            name: compiled-binary  # Correspond au nom de l'artifact téléchargé
+            path: ./  # Téléchargement dans le répertoire courant  
+        # Copie du fichier binaire vers le serveur distant
+        - name: Copy binary to server
+          run: |
+            scp ./file-bin admin@145.223.34.251:~/deploy/  
+        # Exécution du fichier binaire sur le serveur
+        - name: Execute the compiled binary on server
+          run: |
+            ssh admin@145.223.34.251 "sudo chmod +x ~/deploy/file-bin && ~/deploy/file-bin"
 
-
-  # CODE SOURCE
 
   # # Déploiement du projet
   # deploy:
-  #    runs-on: ubuntu-latest
-  #    needs: build
-  #    steps:
-
-  #      # Configuration de la clé SSH pour le déploiement
-  #      - name: SSH key
-  #        uses: webfactory/ssh-agent@v0.5.3
-  #        with:
-  #          ssh-private-key: xxxxx
-
-  #      # Téléchargement de l'artifact (fichier binaire compilé)
-  #      - name: Download compiled binary
-  #        uses: actions/download-artifact@v3
-  #        with:
+  #   runs-on: ubuntu-latest
+  #   needs: build
+  #   steps:
+  #     # Téléchargement de l'artifact (fichier binaire compilé)
+  #     - name: Download compiled binary
+  #       uses: actions/download-artifact@v3
+  #       with:
   #         name: compiled-binary  # Correspond au nom de l'artifact téléchargé
   #         path: ./  # Téléchargement dans le répertoire courant
 
-  #      # Copie du fichier binaire vers le serveur distant
-  #      - name: Copy binary to server
-  #        run: |
-  #          scp ./file-bin student@itdeveloppement-server.eddi.cloud:~/deploy/
-
-  #      # Exécution du fichier binaire sur le serveur
-  #      - name: Execute the compiled binary on server
-  #        run: |
-  #         ssh student@itdeveloppement-server.eddi.cloud "sudo chmod +x ~/deploy/file-bin && ~/deploy/file-bin"
+  #     # Test de connexion SSH avec appleboy/ssh-action
+  #     - name: Test SSH connection using appleboy/ssh-action
+  #       uses: appleboy/ssh-action@v1.2.0
+  #       with:
+  #         host: ${{ secrets.REMOTE_HOST }}
+  #         username: ${{ secrets.REMOTE_USER }}
+  #         key: ${{ secrets.SSH_PRIVATE_KEY }}
+  #         script: |
+  #           echo "Test de la connexion SSH au serveur"
+  #           echo "Connexion réussie à $(hostname)"
