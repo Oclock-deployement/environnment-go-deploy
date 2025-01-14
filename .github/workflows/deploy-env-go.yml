@@ -43,7 +43,7 @@
   
     # Déploiement du projet
     deploy:
-      runs-on: go
+      runs-on: go marti
       needs: build
       steps:
         - name: Download artifact 
