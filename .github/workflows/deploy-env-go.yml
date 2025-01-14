@@ -62,11 +62,13 @@ jobs:
           uses: actions/download-artifact@v3
           with:
             name: compiled-binary  # Correspond au nom de l'artifact téléchargé
-            path: ./  # Téléchargement dans le répertoire courant  
+            path: ./  # Téléchargement dans le répertoire courant
+
         # Copie du fichier binaire vers le serveur distant
         - name: Copy binary to server
           run: |
-            scp -o StrictHostKeyChecking=no ./file-bin admin@srv638900:~/deploy/  
+            scp -o StrictHostKeyChecking=no ./file-bin admin@145.223.34.251:~/deploy/
+              
         # Exécution du fichier binaire sur le serveur
         - name: Execute the compiled binary on server
           run: |
