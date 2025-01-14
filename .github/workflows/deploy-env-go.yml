@@ -40,7 +40,7 @@
           with:
             name: compiled-binary
             # recuperation du fichier binaire
-            path: ./file-bin
+            path: ./deploy/file-bin
   
         # Verifier la presence du fichier
         - name: Verify upload artifact
