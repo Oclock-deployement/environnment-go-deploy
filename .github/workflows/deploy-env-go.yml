@@ -49,5 +49,5 @@
         - name: Download artifact 
           uses: actions/download-artifact@v4
           with:
-            # path: ./
+            path: ./
             name: compiled-binary
