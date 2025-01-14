@@ -42,6 +42,11 @@
             # recuperation du fichier binaire
             path: ./file-bin
   
+        # Verifier la presence du fichier
+        - name: Verify upload artifact
+          run: |
+            ls -l ./
+
     # Déploiement du projet
     deploy:
       runs-on: go marti
@@ -55,6 +60,11 @@
             # Ici, on le télécharge dans le répertoire courant du job, soit './'.
             path: ./
             name: compiled-binary
+
+        # Verifier la presence du fichier
+        - name: Verify download artifact
+          run: |
+            ls -l ./
 
         # Déplacer l'artefact téléchargé à la racine du dossier utilisateur
         - name: Deploy to target directory
