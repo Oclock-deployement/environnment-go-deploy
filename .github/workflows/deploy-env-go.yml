@@ -39,7 +39,7 @@
           uses: actions/upload-artifact@v4
           with:
             name: compiled-binary
-            path: ./
+            path: ./file-bin
   
     # Déploiement du projet
     deploy:
@@ -62,4 +62,4 @@
         # Verifier la presence du fichier
         - name: Verify deployment
           run: |
-            ls -l /home/sutdent
+            ls -l /home/student
