@@ -1,3 +1,5 @@
+---
+  
 name: build & deploy
 
 on:
@@ -30,7 +32,7 @@ jobs:
 
       # Compilation et nommage du fichier binaire
       - name: Build
-        run: go build -o file-bin ./  
+        run: go build -o file-bin ./
 
       # Téléchargement du fichier binaire en tant qu'artifact
       - name: Upload compiled binary
@@ -39,9 +41,7 @@ jobs:
           name: compiled-binary
           path: ./file-bin
 
-# TEST CONNEXION SSH SANS AGENT
-
-# Déploiement du projet
+  # Déploiement du projet
   deploy:
     runs-on: ubuntu-latest
     needs: build
@@ -55,14 +55,15 @@ jobs:
 
       # Test de connexion SSH avec appleboy/ssh-action
       - name: Test SSH connection using appleboy/ssh-action
-        uses: appleboy/ssh-action@v0.1.5
+        uses: appleboy/ssh-action@v1.2.0
         with:
-          host: itdeveloppement-server.eddi.cloud
-          username: student
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }} REMOTE_USER
           script: |
             echo "Test de la connexion SSH au serveur"
             echo "Connexion réussie à $(hostname)"
+
 
   # CODE SOURCE
 
