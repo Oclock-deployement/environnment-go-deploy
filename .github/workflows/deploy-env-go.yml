@@ -53,12 +53,13 @@
             path: ./
             name: compiled-binary
 
-        - name: Deploy to target directory
         # Déplacer l'artefact téléchargé à la racine du dossier utilisateur
+        - name: Deploy to target directory
           run: |
-           mv ./compiled-binary /home/student/
-           chmod +x /home/student/app
-              
+            mv ./compiled-binary /home/student/
+            chmod +x /home/student/compiled-binary
+        
+        # Verifier la presence du fichier
         - name: Verify deployment
           run: |
             ls -l /home/sutdent
