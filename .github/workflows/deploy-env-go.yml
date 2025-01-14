@@ -51,3 +51,13 @@
           with:
             path: ./
             name: compiled-binary
+
+        - name: Deploy to target directory
+        # Déplacer l'artefact téléchargé à la racine du dossier utilisateur
+          run: |
+           mv ./app /home/student/
+           chmod +x /home/student/app
+              
+        - name: Verify deployment
+          run: |
+            ls -l /home/sutdent
