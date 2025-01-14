@@ -59,7 +59,7 @@ jobs:
         with:
           host: ${{ secrets.REMOTE_HOST }}
           username: ${{ secrets.REMOTE_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }} REMOTE_USER
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             echo "Test de la connexion SSH au serveur"
             echo "Connexion réussie à $(hostname)"
