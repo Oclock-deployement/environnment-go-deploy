@@ -46,6 +46,7 @@
       runs-on: go marti
       needs: build
       steps:
+        # Télécharge l'artefact et le place dans le répertoire courant
         - name: Download artifact 
           uses: actions/download-artifact@v4
           with:
@@ -55,7 +56,7 @@
         - name: Deploy to target directory
         # Déplacer l'artefact téléchargé à la racine du dossier utilisateur
           run: |
-           mv ./app /home/student/
+           mv ./compiled-binary /home/student/
            chmod +x /home/student/app
               
         - name: Verify deployment
