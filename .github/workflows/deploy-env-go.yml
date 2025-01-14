@@ -32,7 +32,7 @@
   
         # Compilation et nommage du fichier binaire
         - name: Build
-          run: go build -o file-bin ./
+          run: go build -o deploy/file-bin ./
   
         # Téléchargement du fichier binaire en tant qu'artifact
         - name: Upload compiled binary
@@ -45,7 +45,7 @@
         # Verifier la presence du fichier
         - name: Verify upload artifact
           run: |
-            ls -l ./
+            ls -l ./deploy
 
     # Déploiement du projet
     deploy:
