@@ -2,7 +2,7 @@
   # role : déployer automatiquement un fichier go executable et compilé 
   # sur un serveur via un local runner (go marti)
 
-  name: Build & deploy
+  name: Build & deploy on server
   
   on:
     # Déclenchement de l'action lors d'un push sur la branche main ou par déclenchement manuel
