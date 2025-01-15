@@ -1,4 +1,4 @@
-name: Buil and push docker image on Dockerhub whith tag and cron
+name: Docker image on Dockerhub Cron
 
 on:
   schedule:
