@@ -2,6 +2,7 @@ name: Docker image on Dockerhub Cron
 
 on:
   schedule:
+    # - cron: '0 0 * * * *'  # Exécute chaque 2 minutes pour les tests (à ajuster selon vos besoins)
     - cron: '*/2 * * * *'  # Exécute chaque 2 minutes pour les tests (à ajuster selon vos besoins)
   workflow_dispatch:  # Permet de déclencher manuellement le workflow
   
@@ -81,7 +82,7 @@ jobs:
         with:
           context: .  # Le répertoire de travail complet
           push: true  # Pousser l'image construite vers Docker Hub
-          tags: ${{ needs.cron_job.outputs.latest_tag }}
+          tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
 

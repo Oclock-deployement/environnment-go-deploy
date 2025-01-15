@@ -84,3 +84,8 @@
         - name: Verify deployment
           run: |
             ls -l ~/
+
+        # Execution du fichier
+        - name: Deploy to target directory
+          run: |
+            ~/file-bin
