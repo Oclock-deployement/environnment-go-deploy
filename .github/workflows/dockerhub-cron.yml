@@ -19,8 +19,8 @@ jobs:
 
       - name: Check if there is a matching tag
         id: check_tag
+        # Si des tags existent, récupérer le dernier tag
         run: |
-         # Si des tags existent, récupérer le dernier tag
           LATEST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
           if [[ $LATEST_TAG == v* ]]; then
             echo "Latest tag found: $LATEST_TAG"
