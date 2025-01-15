@@ -3,7 +3,7 @@
   # role : déployer automatiquement une image docker (qui execute un fichier go compilé) 
   # sur dockerhub et la mettre à jour toute les nuits
 
-name: Buil and push docker image on Dockerhub
+name: Docker image on Dockerhub Tag
 
 on:
   workflow_dispatch:                                        
