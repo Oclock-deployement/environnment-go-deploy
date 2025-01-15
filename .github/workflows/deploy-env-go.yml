@@ -32,9 +32,9 @@
   
         # verifie et créer le dossier deploy
         - name: Verify and create deploy directory
-          run:
+          run: |
             if [ ! -d "./deploy" ]; then
-            mkdir -p ./deploy
+              mkdir -p ./deploy
             fi
         
         # Compilation et nommage du fichier binaire
