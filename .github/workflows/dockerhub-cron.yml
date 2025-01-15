@@ -4,10 +4,7 @@ on:
   schedule:
     - cron: '*/2 * * * *'  # Exécute chaque 2 minutes pour les tests (à ajuster selon vos besoins)
   workflow_dispatch:  # Permet de déclencher manuellement le workflow
-  push:
-    tags:
-      - 'v*'  # Déclenche lors du push d'un tag commençant par v
-
+  
 env:
   REGISTRY: docker.io
   IMAGE_NAME: ${{ vars.DOCKERHUB_USERNAME }}/vachette  # Nom de l'image Docker
@@ -15,47 +12,46 @@ env:
 jobs:
   cron_job:
     runs-on: ubuntu-latest
-    # ressultat du job accessible dans d autre job
+    # ressultat du job accessible dans d'autres jobs
     outputs:
       latest_tag: ${{ steps.check_tag.outputs.latest_tag }}
     steps:
-    # recuperation des fichiers
+    # récupération des fichiers
       - name: Checkout code
         uses: actions/checkout@v4
     
-    # Vérifier des tags dans le dépôt
+    # Vérification des tags dans le dépôt
       - name: Check if there is a matching tag
         id: check_tag
         run: |
             # Vérifier s'il existe des tags dans le dépôt
             echo "Fetching tags..."
-            git fetch --tags                                        # Récupère les tags du dépôt distant
+            git fetch --tags  # Récupère les tags du dépôt distant
 
-            TAGS=$(git tag)                                         # Récupère tous les tags du dépôt Git
-            echo "Tags found: $TAGS"                                # Affiche tous les tags récupérés
+            TAGS=$(git tag)  # Récupère tous les tags du dépôt Git
+            echo "Tags found: $TAGS"  # Affiche tous les tags récupérés
 
-            if [ -z "$TAGS" ]; then                                 # Vérifie si aucun tag n'existe
-            echo "No tags found."                                   # Affiche un message si aucun tag n'est trouvé
-            echo "::set-output name=latest_tag::"                   # Définit la sortie 'latest_tag' vide
-            exit 0                                                  # Quitte le script sans erreur si aucun tag n'est trouvé
+            if [ -z "$TAGS" ]; then  # Vérifie si aucun tag n'existe
+              echo "No tags found."  # Affiche un message si aucun tag n'est trouvé
+              echo "::set-output name=latest_tag::"  # Définit la sortie 'latest_tag' vide
+              exit 0  # Quitte le script sans erreur si aucun tag n'est trouvé
             fi
 
             # Si des tags existent, récupérer le dernier tag
-            LATEST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))      # Récupère le dernier tag dans l'historique Git
-            if [[ $LATEST_TAG == v* ]]; then                                            # Vérifie si le tag commence par 'v' (par exemple 'v1.0.0')
-            echo "Latest tag found: $LATEST_TAG"                                        # Affiche le dernier tag trouvé
-            echo "::set-output name=latest_tag::$LATEST_TAG"                            # Définit la sortie 'latest_tag' avec le dernier tag trouvé
-            else                                                                        # Si le tag ne correspond pas au format attendu ('v*')
-            echo "No matching tag found."                                               # Affiche un message indiquant qu'aucun tag correspondant n'a été trouvé
-            echo "::set-output name=latest_tag::"                                       # Définit la sortie 'latest_tag' vide
-            exit 0                                                                      # Quitte le script sans erreur si le tag ne correspond pas
+            LATEST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))  # Récupère le dernier tag dans l'historique Git
+            if [[ $LATEST_TAG == v* ]]; then  # Vérifie si le tag commence par 'v' (par exemple 'v1.0.0')
+              echo "Latest tag found: $LATEST_TAG"  # Affiche le dernier tag trouvé
+              echo "::set-output name=latest_tag::$LATEST_TAG"  # Définit la sortie 'latest_tag' avec le dernier tag trouvé
+            else  # Si le tag ne correspond pas au format attendu ('v*')
+              echo "No matching tag found."  # Affiche un message indiquant qu'aucun tag correspondant n'a été trouvé
+              echo "::set-output name=latest_tag::"  # Définit la sortie 'latest_tag' vide
+              exit 0  # Quitte le script sans erreur si le tag ne correspond pas
             fi
-                                                                                        # Quitte le script sans erreur si le tag ne correspond pas
 
   build:
     needs: cron_job
     # Condition : le tag doit exister
-    if: needs.cron_job.outputs.latest_tag != ''  
+    if: ${{ needs.cron_job.outputs.latest_tag != '' }}  # Ne lance le job 'build' que si un tag valide a été trouvé
     runs-on: ubuntu-24.04
 
     steps:
@@ -80,6 +76,7 @@ jobs:
         with:
           context: .  # Le répertoire de travail complet
           push: true  # Pousser l'image construite vers Docker Hub
-          #tags: ${{ steps.meta.outputs.tags }}
-          tags: ${{ needs.cron_job.outputs.latest_tag }}
+          tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+
