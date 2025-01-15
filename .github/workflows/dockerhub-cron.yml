@@ -29,28 +29,28 @@ jobs:
         run: |
             # Vérifier s'il existe des tags dans le dépôt
             echo "Fetching tags..."
-            git fetch --tags  # Récupère les tags du dépôt distant
+            git fetch --tags                                        # Récupère les tags du dépôt distant
 
-            TAGS=$(git tag)  # Récupère tous les tags du dépôt Git
-            echo "Tags found: $TAGS"  # Affiche tous les tags récupérés
+            TAGS=$(git tag)                                         # Récupère tous les tags du dépôt Git
+            echo "Tags found: $TAGS"                                # Affiche tous les tags récupérés
 
-            if [ -z "$TAGS" ]; then  # Vérifie si aucun tag n'existe
-            echo "No tags found."  # Affiche un message si aucun tag n'est trouvé
-            echo "::set-output name=latest_tag::"  # Définit la sortie 'latest_tag' vide
-            exit 0  # Quitte le script sans erreur si aucun tag n'est trouvé
+            if [ -z "$TAGS" ]; then                                 # Vérifie si aucun tag n'existe
+            echo "No tags found."                                   # Affiche un message si aucun tag n'est trouvé
+            echo "::set-output name=latest_tag::"                   # Définit la sortie 'latest_tag' vide
+            exit 0                                                  # Quitte le script sans erreur si aucun tag n'est trouvé
             fi
 
             # Si des tags existent, récupérer le dernier tag
-            LATEST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))  # Récupère le dernier tag dans l'historique Git
-            if [[ $LATEST_TAG == v* ]]; then  # Vérifie si le tag commence par 'v' (par exemple 'v1.0.0')
-            echo "Latest tag found: $LATEST_TAG"  # Affiche le dernier tag trouvé
-            echo "::set-output name=latest_tag::$LATEST_TAG"  # Définit la sortie 'latest_tag' avec le dernier tag trouvé
-            else  # Si le tag ne correspond pas au format attendu ('v*')
-            echo "No matching tag found."  # Affiche un message indiquant qu'aucun tag correspondant n'a été trouvé
-            echo "::set-output name=latest_tag::"  # Définit la sortie 'latest_tag' vide
-            exit 0  # Quitte le script sans erreur si le tag ne correspond pas
+            LATEST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))      # Récupère le dernier tag dans l'historique Git
+            if [[ $LATEST_TAG == v* ]]; then                                            # Vérifie si le tag commence par 'v' (par exemple 'v1.0.0')
+            echo "Latest tag found: $LATEST_TAG"                                        # Affiche le dernier tag trouvé
+            echo "::set-output name=latest_tag::$LATEST_TAG"                            # Définit la sortie 'latest_tag' avec le dernier tag trouvé
+            else                                                                        # Si le tag ne correspond pas au format attendu ('v*')
+            echo "No matching tag found."                                               # Affiche un message indiquant qu'aucun tag correspondant n'a été trouvé
+            echo "::set-output name=latest_tag::"                                       # Définit la sortie 'latest_tag' vide
+            exit 0                                                                      # Quitte le script sans erreur si le tag ne correspond pas
             fi
-            # Quitte le script sans erreur si le tag ne correspond pas
+                                                                                        # Quitte le script sans erreur si le tag ne correspond pas
 
   build:
     needs: cron_job
@@ -80,6 +80,6 @@ jobs:
         with:
           context: .  # Le répertoire de travail complet
           push: true  # Pousser l'image construite vers Docker Hub
-          tags: ${{ steps.meta.outputs.tags }}
+          #tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ needs.cron_job.outputs.latest_tag }}
           labels: ${{ steps.meta.outputs.labels }}
-
