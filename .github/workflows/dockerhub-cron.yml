@@ -28,14 +28,13 @@ jobs:
         id: check_tag
         run: |
           # Vérifier s'il existe des tags dans le dépôt
-
-          TAGS=$(git tag)
-          echo "Tags found: $TAGS"                                                  # Récupère tous les tags du dépôt Git
-          if [ -z "$TAGS" ]; then                                           # Vérifie si aucun tag n'existe
-            echo "No tags found."                                           # Affiche un message si aucun tag n'est trouvé
-            echo "::set-output name=latest_tag::"                           # Définit la sortie 'latest_tag' vide
-            exit 0                                                          # Quitte le script sans erreur si aucun tag n'est trouvé
-          fi
+          # TAGS=$(git tag)
+          # echo "Tags found: $TAGS"                                                  # Récupère tous les tags du dépôt Git
+          # if [ -z "$TAGS" ]; then                                           # Vérifie si aucun tag n'existe
+          #   echo "No tags found."                                           # Affiche un message si aucun tag n'est trouvé
+          #   echo "::set-output name=latest_tag::"                           # Définit la sortie 'latest_tag' vide
+          #   exit 0                                                          # Quitte le script sans erreur si aucun tag n'est trouvé
+          # fi
 
           # Si des tags existent, récupérer le dernier tag
 
