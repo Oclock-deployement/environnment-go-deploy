@@ -11,11 +11,6 @@ on:
     # déclanchement au push d'un nouveau tag
     tags:
       - 'v*'                                               
-  schedule:
-    # Planification execution (toute les nuits à minuit)
-      - cron: '0 0 * * *'
-      # - cron: '*/2 * * * *' # toute les 2 minutes pour test
-
 env:
   REGISTRY: docker.io                                      
   IMAGE_NAME: ${{ vars.DOCKERHUB_USERNAME }}/vachette       # Le nom de l'image 
