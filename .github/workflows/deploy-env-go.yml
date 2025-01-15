@@ -77,10 +77,10 @@
         # Déplacer l'artefact téléchargé à la racine du dossier utilisateur
         - name: Deploy to target directory
           run: |
-            mv ./file-bin /home/student/
-            chmod +x /home/student/file-bin
+            mv ./file-bin ~/
+            chmod +x ~/file-bin
         
         # Verifier la presence du fichier
         - name: Verify deployment
           run: |
-            ls -l /home/student
+            ls -l ~/
