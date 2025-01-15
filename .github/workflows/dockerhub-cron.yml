@@ -20,6 +20,7 @@ jobs:
       - name: Check if there is a matching tag
         id: check_tag
         run: |
+         # Si des tags existent, récupérer le dernier tag
           LATEST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
           if [[ $LATEST_TAG == v* ]]; then
             echo "Latest tag found: $LATEST_TAG"
@@ -27,7 +28,7 @@ jobs:
           else
             echo "No matching tag found."
             echo "::set-output name=latest_tag::"
-            exit 0
+            exit 0  # Sortir si le tag ne correspond pas à 'v*'
 
   build:
     needs: cron_job
