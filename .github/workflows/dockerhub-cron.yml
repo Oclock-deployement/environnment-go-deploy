@@ -1,4 +1,4 @@
-name: Build and Push Docker Image
+name: Buil and push docker image on Dockerhub whith tag and cron
 
 on:
   schedule:
@@ -15,36 +15,43 @@ env:
 jobs:
   cron_job:
     runs-on: ubuntu-latest
+    # ressultat du job accessible dans d autre job
     outputs:
       latest_tag: ${{ steps.check_tag.outputs.latest_tag }}
     steps:
+    # recuperation des fichiers
       - name: Checkout code
         uses: actions/checkout@v4
-
+    
+    # Vérifier des tags dans le dépôt
       - name: Check if there is a matching tag
         id: check_tag
         run: |
           # Vérifier s'il existe des tags dans le dépôt
+
           TAGS=$(git tag)
-          if [ -z "$TAGS" ]; then
-            echo "No tags found."
-            echo "::set-output name=latest_tag::"
-            exit 0  # Sortir si aucun tag n'est trouvé
+          echo "Tags found: $TAGS"                                                  # Récupère tous les tags du dépôt Git
+          if [ -z "$TAGS" ]; then                                           # Vérifie si aucun tag n'existe
+            echo "No tags found."                                           # Affiche un message si aucun tag n'est trouvé
+            echo "::set-output name=latest_tag::"                           # Définit la sortie 'latest_tag' vide
+            exit 0                                                          # Quitte le script sans erreur si aucun tag n'est trouvé
           fi
 
           # Si des tags existent, récupérer le dernier tag
-          LATEST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
-          if [[ $LATEST_TAG == v* ]]; then
-            echo "Latest tag found: $LATEST_TAG"
-            echo "::set-output name=latest_tag::$LATEST_TAG"
-          else
-            echo "No matching tag found."
-            echo "::set-output name=latest_tag::"
-            exit 0  # Sortir si le tag ne correspond pas à 'v*'
+
+          LATEST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))            # Récupère le dernier tag dans l'historique Git
+          if [[ $LATEST_TAG == v* ]]; then  # Vérifie si le tag commence par 'v' (par exemple 'v1.0.0')
+            echo "Latest tag found: $LATEST_TAG"                                            # Affiche le dernier tag trouvé
+            echo "::set-output name=latest_tag::$LATEST_TAG"                                # Définit la sortie 'latest_tag' avec le dernier tag trouvé
+          else  # Si le tag ne correspond pas au format attendu ('v*')
+            echo "No matching tag found."                                                   # Affiche un message indiquant qu'aucun tag correspondant n'a été trouvé
+            echo "::set-output name=latest_tag::"                                           # Définit la sortie 'latest_tag' vide
+            exit 0                                                                          # Quitte le script sans erreur si le tag ne correspond pas
 
   build:
     needs: cron_job
-    if: needs.cron_job.outputs.latest_tag != ''  # Condition : le tag doit exister
+    # Condition : le tag doit exister
+    if: needs.cron_job.outputs.latest_tag != ''  
     runs-on: ubuntu-24.04
 
     steps:
