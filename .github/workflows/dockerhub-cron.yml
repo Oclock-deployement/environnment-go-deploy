@@ -81,7 +81,7 @@ jobs:
         with:
           context: .  # Le répertoire de travail complet
           push: true  # Pousser l'image construite vers Docker Hub
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ needs.cron_job.outputs.latest_tag }}
           labels: ${{ steps.meta.outputs.labels }}
 
 
