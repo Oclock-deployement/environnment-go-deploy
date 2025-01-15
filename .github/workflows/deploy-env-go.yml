@@ -24,12 +24,19 @@
           with:
             go-version: '1.23.x'
   
-        # Installation des dépendances
+        # Installation des dépendances si elle ne sont pas installées
         - name: Install dependencies
           run: |
             [ -f go.mod ] || go mod init cowsay
             go mod tidy
   
+        # verifie et créer le dossier deploy
+        - name: Verify and create deploy directory
+          run:
+            if [ ! -d "./deploy" ]; then
+            mkdir -p ./deploy
+            fi
+        
         # Compilation et nommage du fichier binaire
         - name: Build
           run: go build -o deploy/file-bin ./
@@ -64,7 +71,7 @@
         - name: Verify download artifact
           run: |
             ls -l ./
-
+      
         # Déplacer l'artefact téléchargé à la racine du dossier utilisateur
         - name: Deploy to target directory
           run: |
