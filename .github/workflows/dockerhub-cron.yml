@@ -50,14 +50,19 @@ jobs:
 
   build:
     needs: cron_job
-    # Condition : le tag doit exister
-    if: ${{ needs.cron_job.outputs.latest_tag != '' }}  # Ne lance le job 'build' que si un tag valide a été trouvé
+    # le tag doit exister
+    if: ${{ needs.cron_job.outputs.latest_tag != '' }}  
+   
     runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Display latest_tag from cron_job
+        run: |
+         echo "The latest tag from cron_job is: ${{ needs.cron_job.outputs.latest_tag }}"
+      
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v5
